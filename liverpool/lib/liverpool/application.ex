@@ -11,6 +11,7 @@ defmodule Liverpool.Application do
       LiverpoolWeb.Telemetry,
       {DNSCluster, query: Application.get_env(:liverpool, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Liverpool.PubSub},
+      {Registry, keys: :unique, name: Liverpool.LobbyRegistry},
       # Start a worker by calling: Liverpool.Worker.start_link(arg)
       # {Liverpool.Worker, arg},
       # Start to serve requests, typically the last entry

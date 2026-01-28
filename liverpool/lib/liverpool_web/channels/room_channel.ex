@@ -6,8 +6,35 @@ defmodule LiverpoolWeb.RoomChannel do
   end
 
   def handle_in("join_game", %{"username" => newPlayer, "lobbyCode" => lobbyCode}, socket) do
+    IO.puts("Joining game with lobby code: #{lobbyCode}\n\n\n")
+
+    case start_lobby_if_needed(lobbyCode) do
+      {:ok, lobby_pid} ->
+        Liverpool.LobbyManager.add_player(lobby_pid, newPlayer)
+        broadcast!(socket, "new_player", %{body: newPlayer})
+        {:reply, {:ok, %{message: "Waiting for host to start game"}}, socket}
+
+      {:error, reason} ->
+        {:reply, {:error, %{reason: reason}}, socket}
+    end
+
+    Liverpool.LobbyManager.add_player(lobbyCode, newPlayer)
     broadcast!(socket, "new_player", %{body: newPlayer})
     {:reply, {:ok, %{message: "Waiting for host to start game"}}, socket}
+  end
+
+  defp start_lobby_if_needed(code) do
+    IO.puts("Starting lobby if needed: #{code}\n\n\n")
+
+    case Registry.lookup(Liverpool.LobbyRegistry, code) do
+      [] -> Liverpool.LobbyManager.start_link(code)
+      [{pid, _}] -> {:ok, pid}
+    end
+  end
+
+  def handle_in("get_players", %{"lobbyCode" => lobbyCode}, socket) do
+    players = Liverpool.LobbyManager.get_players(lobbyCode)
+    {:reply, {:ok, %{players: players}}, socket}
   end
 
   def join("room:" <> _room_id, _message, socket) do
