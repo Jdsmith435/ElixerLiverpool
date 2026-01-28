@@ -8,28 +8,6 @@ let lobbyCode = document.querySelector("#lobby_code");
 let joinLobbyBtn = document.querySelector("#join-lobby-btn");
 let createLobbyBtn = document.querySelector("#create-lobby-btn");
 
-username.addEventListener("keypress", (event) => {
-  if (lobbyCode.textContent.length > 0 && username.textContent.length > 0) {
-    joinLobbyBtn.disabled = false;
-  } else {
-    joinLobbyBtn.disabled = true;
-  }
-
-  if (username.textContent.length > 0) {
-    createLobbyBtn.disabled = false;
-  } else {
-    createLobbyBtn.disabled = true;
-  }
-});
-
-lobbyCode.addEventListener("keypress", (event) => {
-  if (lobbyCode.textContent.length > 0 && username.textContent.length > 0) {
-    joinLobbyBtn.disabled = false;
-  } else {
-    joinLobbyBtn.disabled = true;
-  }
-});
-
 lobbyCode.addEventListener("keypress", (event) => {
   if (event.key === "Enter") {
     if (lobbyCode.value.length > 0 && username.value.length > 0) {
@@ -55,11 +33,9 @@ joinLobbyBtn.addEventListener("click", () => {
     });
 });
 
-// channel.on("new_player", (payload) => {
-//   let message = document.createElement("p");
-//   message.innerText = `[${Date()}] ${payload.body}`;
-//   messageContainer.appendChild(message);
-// });
+channel.on("new_player", (payload) => {
+  console.log("New player", payload.body);
+});
 
 channel
   .join()
