@@ -45,6 +45,10 @@ createLobbyBtn.addEventListener("click", () => {
     .receive("ok", (resp) => {
       document.querySelector("#lobby-form").style.display = "none";
       document.querySelector("#pregame-lobby").style.display = "block";
+      lobbyCode = document.querySelector("#lobby-code");
+      const lobbyCodeElement = document.createElement("p");
+      lobbyCodeElement.innerText = resp.lobby_code;
+      lobbyCode.appendChild(lobbyCodeElement);
     })
     .receive("error", (resp) => {
       console.log("Unable to create lobby", resp);
