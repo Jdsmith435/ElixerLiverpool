@@ -9,8 +9,7 @@ defmodule LiverpoolWeb.RoomChannel do
     case start_lobby_if_needed(lobbyCode) do
       {:ok, lobby_pid} ->
         Liverpool.LobbyManager.add_player(lobbyCode, newPlayer)
-        players = Liverpool.LobbyManager.get_players(lobbyCode)
-        broadcast!(socket, "new_player", %{body: players})
+        broadcast!(socket, "new_player", %{body: newPlayer})
         {:reply, {:ok, %{message: "Waiting for host to start game"}}, socket}
 
       {:error, reason} ->
