@@ -26,7 +26,8 @@ joinLobbyBtn.addEventListener("click", () => {
       lobbyCode: lobbyCode.value,
     })
     .receive("ok", (resp) => {
-      console.log("Joined successfully", resp.message);
+      document.querySelector("#lobby-form").style.display = "none";
+      document.querySelector("#pregame-lobby").style.display = "block";
     })
     .receive("error", (resp) => {
       console.log("Unable to join", resp);
