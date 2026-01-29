@@ -2,12 +2,19 @@ defmodule Liverpool.LobbyManager do
   use GenServer
 
   # Called from Channel
-  def start_link(lobby_code) do
+  def start_link() do
+    lobby_code =
+      :crypto.strong_rand_bytes(6)
+      |> Base.url_encode64(padding: false)
+      |> binary_part(0, 8)
+
     GenServer.start_link(__MODULE__, lobby_code, name: via_tuple(lobby_code))
+    {:ok, lobby_code}
   end
 
   def add_player(lobby_code, player_name) do
     GenServer.call(via_tuple(lobby_code), {:add_player, player_name})
+    {:ok, %{players: GenServer.call(via_tuple(lobby_code), :get_players)}}
   end
 
   def get_players(lobby_code) do

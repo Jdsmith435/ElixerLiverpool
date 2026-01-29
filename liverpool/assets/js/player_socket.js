@@ -37,6 +37,24 @@ joinLobbyBtn.addEventListener("click", () => {
     });
 });
 
+createLobbyBtn.addEventListener("click", () => {
+  channel
+    .push("create_lobby", {
+      username: username.value,
+    })
+    .receive("ok", (resp) => {
+      document.querySelector("#lobby-form").style.display = "none";
+      document.querySelector("#pregame-lobby").style.display = "block";
+    })
+    .receive("error", (resp) => {
+      console.log("Unable to create lobby", resp);
+    });
+});
+
+channel.on("on_join", (payload) => {
+  console.log("Joined successfully", payload.players);
+});
+
 channel.on("new_player", (payload) => {
   const playerList = document.createElement("p");
   playerList.innerText = payload.body;
