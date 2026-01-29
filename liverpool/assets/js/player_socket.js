@@ -7,6 +7,9 @@ let username = document.querySelector("#player_name");
 let lobbyCode = document.querySelector("#lobby_code");
 let joinLobbyBtn = document.querySelector("#join-lobby-btn");
 let createLobbyBtn = document.querySelector("#create-lobby-btn");
+let pregameLobbyPlayerList = document.querySelector(
+  "#pregame-lobby-player-list",
+);
 
 lobbyCode.addEventListener("keypress", (event) => {
   if (event.key === "Enter") {
@@ -35,7 +38,9 @@ joinLobbyBtn.addEventListener("click", () => {
 });
 
 channel.on("new_player", (payload) => {
-  console.log("New player", payload.body);
+  const playerList = document.createElement("p");
+  playerList.innerText = payload.body;
+  pregameLobbyPlayerList.appendChild(playerList);
 });
 
 channel
