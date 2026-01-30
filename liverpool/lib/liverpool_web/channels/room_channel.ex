@@ -8,12 +8,26 @@ defmodule LiverpoolWeb.RoomChannel do
   def handle_in("join_game", %{"username" => newPlayer, "lobbyCode" => lobbyCode}, socket) do
     case Liverpool.LobbyManager.add_player(lobbyCode, newPlayer) do
       {:ok, %{players: players}} ->
+        if Enum.find(players, fn player -> player == newPlayer end) do
+          assign(socket, :player_name, "#{newPlayer} (2)")
+        else
+          assign(socket, :player_name, newPlayer)
+        end
+
         push(socket, "on_join", %{players: players})
-        broadcast!(socket, "new_player", %{body: newPlayer})
+        broadcast_from!(socket, "new_player", %{body: newPlayer})
         {:reply, {:ok, %{message: "Waiting for host to start game"}}, socket}
 
       {:error, reason} ->
         {:reply, {:error, %{reason: reason}}, socket}
+    end
+  end
+
+  def handle_out("on_join", payload, socket) do
+    if !Enum.any?(payload.players, fn player -> player == socket.assigns.player_name end) do
+      push(socket, "on_join", payload)
+    else
+      {:noreply, socket}
     end
   end
 

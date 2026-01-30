@@ -56,7 +56,13 @@ createLobbyBtn.addEventListener("click", () => {
 });
 
 channel.on("on_join", (payload) => {
-  console.log("Joined successfully", payload.players);
+  const { players } = payload;
+  players.forEach((player) => {
+    console.log("Player joined", player);
+    const playerList = document.createElement("p");
+    playerList.innerText = player;
+    pregameLobbyPlayerList.appendChild(playerList);
+  });
 });
 
 channel.on("new_player", (payload) => {
